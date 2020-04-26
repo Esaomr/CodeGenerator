@@ -52,11 +52,11 @@ public class CodeGenerator {
 
         // 数据源配置
         DataSourceConfig dsc = new DataSourceConfig();
-        dsc.setUrl("jdbc:postgresql://14.29.114.203:6543/imp");
+        dsc.setUrl("Url");
         dsc.setDriverName("org.postgresql.Driver");
-        dsc.setUsername("jointt");
-        dsc.setPassword("jointt");
-        dsc.setSchemaName("jointt");
+        dsc.setUsername("用户名");
+        dsc.setPassword("密码");
+        dsc.setSchemaName("模式名称");
         mpg.setDataSource(dsc);
 
         // 包配置
