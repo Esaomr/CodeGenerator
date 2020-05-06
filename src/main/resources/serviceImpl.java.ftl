@@ -27,7 +27,7 @@ import java.util.List;
  * @since ${date}
  */
 @Service
-public class ${table.serviceImplName} extends ${superServiceClass}<${entity}, ${table.mapperName}> implements ${table.serviceName} {
+public class ${table.serviceImplName} extends ${superServiceClass}Impl<${entity}, ${table.mapperName}> implements ${table.serviceName} {
 
     @Autowired
     private ${entity}Dao ${table.name}Dao;

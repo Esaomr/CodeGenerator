@@ -22,11 +22,11 @@ open class ${table.mapperImplName} : ${superMapperImplClass}<${table.mapperName}
 public class ${table.mapperName}Impl extends ${superMapperClass}Impl<${entity}, String> implements ${table.mapperName} {
 
      /**
-     * 查询DataGrid
+     * 查询 DataGrid
      *
-     * @param pagination
-     * @param parametersMap
-     * @return
+     * @param pagination 分页对象
+     * @param parametersMap Map参数集合
+     * @return pagination 分页对象
      */
     @Override
     public Pagination find${entity}Page(Pagination pagination, Map<String, Object> parametersMap) {
@@ -38,14 +38,8 @@ public class ${table.mapperName}Impl extends ${superMapperClass}Impl<${entity}, 
         if(parametersMap.containsKey("name") && StringUtils.isNotBlank(parametersMap.get("name").toString())){
             sb.append(" AND temp.name like '%" + parametersMap.get("name") + "%'");
         }
-        Long count = count(sb.toString(), parametersMap);
-        pagination.setTotalCount(count);
         sb.append(" ORDER BY id");
-        Query query = createQuery(sb.toString(), parametersMap);
-        setPageParameterToQuery(query, pagination);
-        List<${entity}> result = (List<${entity}>) query.list();
-        pagination.setResult(result);
-        return pagination;
+        return findPage(sb.toString(), pagination, parametersMap);
     }
 }
 </#if>

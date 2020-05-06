@@ -10,9 +10,7 @@ import com.baomidou.mybatisplus.generator.config.rules.DateType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * @author lbk
@@ -52,11 +50,11 @@ public class CodeGenerator {
 
         // 数据源配置
         DataSourceConfig dsc = new DataSourceConfig();
-        dsc.setUrl("Url");
+        dsc.setUrl("jdbc:postgresql://14.29.114.203:6543/imp");
         dsc.setDriverName("org.postgresql.Driver");
-        dsc.setUsername("用户名");
-        dsc.setPassword("密码");
-        dsc.setSchemaName("模式名称");
+        dsc.setUsername("jointt");
+        dsc.setPassword("jointt");
+        dsc.setSchemaName("jointt");
         mpg.setDataSource(dsc);
 
         // 包配置
@@ -136,7 +134,7 @@ public class CodeGenerator {
         templateConfig.setController("controller.java");
         templateConfig.setService("service.java");
         templateConfig.setServiceImpl("serviceImpl.java");
-        templateConfig.setMapper("mapper.java");
+        templateConfig.setMapper("dao.java");
         templateConfig.setEntity("entity.java");
         templateConfig.setXml(null);
         mpg.setTemplate(templateConfig);
