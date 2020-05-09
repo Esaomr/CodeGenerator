@@ -5,6 +5,7 @@ import ${superMapperClassPackage}Impl;
 import org.springframework.stereotype.Repository;
 import framework.jointt.ems.page.Pagination;
 import org.hibernate.Query;
+import org.apache.commons.lang3.StringUtils;
 /**
  * <p>
  * ${table.name}

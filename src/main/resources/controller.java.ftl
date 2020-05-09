@@ -9,6 +9,8 @@ import com.jointt.ems.web.ui.JsonModel;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import framework.jointt.ems.page.Pagination;
+import org.apache.commons.lang3.StringUtils;
 <#if restControllerStyle>
 import org.springframework.web.bind.annotation.RestController;
 <#else>
@@ -81,7 +83,7 @@ public class ${table.controllerName} {
     @RequestMapping(value = "editForm")
     public String editFrom(HttpServletRequest request) {
         String emId = request.getParameter("id");
-        ${entity} ${table.name} = ${table.name}Service.get${entity}ById(emId);
+        ${entity} ${table.name} = ${table.name}Service.getById(emId);
         request.setAttribute("${table.name}", ${table.name});
         request.setAttribute("action", "${package.ModuleName}/${table.entityPath}/update");
         return FORM_PAGE;
@@ -96,7 +98,7 @@ public class ${table.controllerName} {
     @RequestMapping(value = "view")
     public String view(HttpServletRequest request) {
         String id = request.getParameter("id");
-        ${entity} ${table.name} = ${table.name}Service.get${entity}ById(id);
+        ${entity} ${table.name} = ${table.name}Service.getById(id);
         request.setAttribute("${table.name}", ${table.name});
         return VIEW_PAGE;
     }
