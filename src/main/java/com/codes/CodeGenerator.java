@@ -33,6 +33,7 @@ public class CodeGenerator {
     }
 
     public static void main(String[] args) {
+
         // 代码生成器
         AutoGenerator mpg = new AutoGenerator();
 
@@ -148,7 +149,7 @@ public class CodeGenerator {
         strategy.setSuperServiceImplClass(null);
         strategy.setSuperServiceClass("com.jointt.ems.core.service.commonality.AbstractService");
         strategy.setSuperMapperClass("framework.jointt.ems.dao.GenericDao");
-        strategy.setSuperControllerClass("com.jointt.ems.web.action.AbstractController");
+        strategy.setSuperControllerClass("com.jointt.ems.web.controller.commonality.BaseController");
         strategy.setSuperEntityColumns("id");
         strategy.setInclude(scanner("表名,多个以英文逗号分隔").split(","));
         strategy.setControllerMappingHyphenStyle(true);

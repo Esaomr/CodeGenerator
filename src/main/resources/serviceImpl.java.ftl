@@ -19,10 +19,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
- * <p>
- * ${table.name} 服务实现类
- * </p>
- *
  * @author ${author}
  * @since ${date}
  */
@@ -32,13 +28,6 @@ public class ${table.serviceImplName} extends ${superServiceClass}Impl<${entity}
     @Autowired
     private ${entity}Dao ${table.name}Dao;
 
-    /**
-     * 查询 DataGrid
-     *
-     * @param pagination 分页对象
-     * @param parametersMap 请求参数
-     * @return DataGrid
-     */
     @Override
     public DataGrid getDataGrid(Pagination pagination, Map<String, Object> parametersMap) {
         if (pagination == null) {

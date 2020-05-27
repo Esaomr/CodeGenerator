@@ -10,7 +10,7 @@ import java.util.Map;
  * </p>
  *
  * @author ${author}
- * @since ${date}
+ * @date ${date}
  */
 <#if kotlin>
 interface ${table.mapperName} : ${superMapperClass}<${entity}>
@@ -22,8 +22,8 @@ public interface ${table.mapperName} extends ${superMapperClass}<${entity}, Stri
      *
      * @param pagination 分页对象
      * @param parametersMap 请求参数
-     * @return DataGrid
+     * @return 分页对象
      */
-    Pagination find${entity}Page(Pagination pagination, Map<String, Object> parametersMap);
+    Pagination findPage(Pagination pagination, Map<String, Object> parametersMap);
 }
 </#if>

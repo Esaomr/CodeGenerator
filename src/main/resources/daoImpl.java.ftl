@@ -7,12 +7,8 @@ import framework.jointt.ems.page.Pagination;
 import org.hibernate.Query;
 import org.apache.commons.lang3.StringUtils;
 /**
- * <p>
- * ${table.name}
- * </p>
- *
  * @author ${author}
- * @since ${date}
+ * @date ${date}
  */
 @Repository
 <#if kotlin>
@@ -22,15 +18,8 @@ open class ${table.mapperImplName} : ${superMapperImplClass}<${table.mapperName}
 <#else>
 public class ${table.mapperName}Impl extends ${superMapperClass}Impl<${entity}, String> implements ${table.mapperName} {
 
-     /**
-     * 查询 DataGrid
-     *
-     * @param pagination 分页对象
-     * @param parametersMap Map参数集合
-     * @return pagination 分页对象
-     */
     @Override
-    public Pagination find${entity}Page(Pagination pagination, Map<String, Object> parametersMap) {
+    public Pagination findPage(Pagination pagination, Map<String, Object> parametersMap) {
         StringBuffer sb = new StringBuffer();
         sb.append("FROM ${entity} temp WHERE 1=1");
         if(parametersMap.containsKey("epId") && StringUtils.isNotBlank(parametersMap.get("epId").toString())){

@@ -24,7 +24,7 @@ import lombok.experimental.Accessors;
  * </p>
  *
  * @author ${author}
- * @since ${date}
+ * @date ${date}
  */
 <#if entityLombokModel>
 @Data

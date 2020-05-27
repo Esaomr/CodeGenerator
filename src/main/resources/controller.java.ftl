@@ -2,15 +2,18 @@ package ${package.Controller};
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.commons.lang3.StringUtils;
+import framework.jointt.ems.utils.excel.ExcelUtils;
+import framework.jointt.ems.page.Pagination;
 import com.jointt.ems.web.ui.PageRequest;
 import com.jointt.ems.web.constant.MessageStatus;
 import com.jointt.ems.web.ui.DataGrid;
 import com.jointt.ems.web.ui.JsonModel;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.List;
-import framework.jointt.ems.page.Pagination;
-import org.apache.commons.lang3.StringUtils;
+
 <#if restControllerStyle>
 import org.springframework.web.bind.annotation.RestController;
 <#else>
@@ -26,7 +29,7 @@ import ${superControllerClassPackage};
  * </p>
  *
  * @author ${author}
- * @since ${date}
+ * @date ${date}
  */
 <#if restControllerStyle>
 @RestController
@@ -42,6 +45,8 @@ public class ${table.controllerName} extends ${superControllerClass} {
 <#else>
 public class ${table.controllerName} {
 </#if>
+
+    private static Logger logger = LoggerFactory.getLogger(${table.controllerName}.class);
 
     private final String PAGE_PREFIX = "/${package.ModuleName}/${table.entityPath}/";
     private final String INDEX_PAGE = PAGE_PREFIX + "${table.name}_index";
@@ -96,8 +101,7 @@ public class ${table.controllerName} {
      */
     @OperateResourceCode(operateCode = "view", resourceCodeList = {"${table.name}", "senior${entity}"})
     @RequestMapping(value = "view")
-    public String view(HttpServletRequest request) {
-        String id = request.getParameter("id");
+    public String view(String id) {
         ${entity} ${table.name} = ${table.name}Service.getById(id);
         request.setAttribute("${table.name}", ${table.name});
         return VIEW_PAGE;
@@ -111,10 +115,10 @@ public class ${table.controllerName} {
     @OperateResourceCode(operateCode = "view", resourceCodeList = {"${table.name}","senior${entity}"})
     @RequestMapping(value = "datagrid")
     @ResponseBody
-    public DataGrid dataGrid(HttpServletRequest request, Pagination pagination) {
+    public DataGrid dataGrid(Pagination pagination) {
         Map<String, Object> parametersMap = ServletUtils.getParametersStartingWith(request, null);
-        datagrid = ${table.name}Service.getDataGrid(pagination, parametersMap);
-        return datagrid;
+        dataGrid = ${table.name}Service.getDataGrid(pagination, parametersMap);
+        return dataGrid;
     }
 
     /**
@@ -127,14 +131,15 @@ public class ${table.controllerName} {
     @ResponseBody
     public JsonModel insert(${entity} ${table.name}) {
         try {
-            ${entity} em = ${table.name}Service.save(${table.name});
-            if (em != null && null != (em.getId())) {
-                json = new JsonModel("新增成功！！！", MessageStatus.OK);
+            ${entity} temp = ${table.name}Service.save(${table.name});
+            if (null != temp && null != (temp.getId())) {
+                json = JsonModel.success("新增成功！！！");
             } else {
-                json = new JsonModel("新增失败！！！", MessageStatus.ERROR);
+                json = JsonModel.error("新增失败！！！");
             }
         } catch (Exception e) {
-            json = new JsonModel("新增失败！！！错误如下：" + e.getMessage(), MessageStatus.ERROR);
+            logger.error(LogExceptionStackUtil.LogExceptionStack(e));
+            json = JsonModel.error("新增失败！！！错误如下：" + e.getMessage());
             e.printStackTrace();
         }
         return json;
@@ -153,12 +158,13 @@ public class ${table.controllerName} {
         try {
             ${entity} temp =  ${table.name}Service.update(${table.name});
             if (temp != null && temp.getId() != null) {
-                json = new JsonModel("修改成功！！！", MessageStatus.OK);
+                json = JsonModel.success("修改成功！！！");
             } else {
-                json = new JsonModel("修改失败！！！", MessageStatus.ERROR);
+                json = JsonModel.error("修改失败！！！");
             }
         } catch (Exception e) {
-            json = new JsonModel("修改失败！！！错误如下：" + e.getMessage(), MessageStatus.ERROR);
+            logger.error(LogExceptionStackUtil.LogExceptionStack(e));
+            json = JsonModel.error("修改失败！！！错误如下：" + e.getMessage());
             e.printStackTrace();
         }
         return json;
@@ -172,17 +178,17 @@ public class ${table.controllerName} {
     @OperateResourceCode(operateCode = "delete", resourceCodeList = {"${table.name}", "senior${entity}"})
     @RequestMapping(value = "delete")
     @ResponseBody
-    public JsonModel delete(HttpServletRequest request) {
+    public JsonModel delete(String ids) {
         try {
-            String ids = request.getParameter("ids");
             int temp = ${table.name}Service.batchDelete(ids);
             if(temp > 0) {
-                json = new JsonModel("删除成功！！！", MessageStatus.OK);
+                json = JsonModel.success("删除成功！！！");
             }else{
-                json = new JsonModel("删除不成功！！！", MessageStatus.PROMPT);
+                json = JsonModel.error("删除不成功！！！");
             }
         } catch (Exception e) {
-            json = new JsonModel("删除失败！！！" , MessageStatus.ERROR);
+            logger.error(LogExceptionStackUtil.LogExceptionStack(e));
+            json = JsonModel.error("删除失败！！！");
             e.printStackTrace();
         }
         return json;
@@ -203,7 +209,27 @@ public class ${table.controllerName} {
         }
         Enterprise enterprise = enterpriseService.get(epId);
         String fileName = enterprise.getName() + "自定义";
-        ${table.name}Service.exprotExcel(fileName, fileName, "自定义", list, Employee.class, response);
+        ExcelUtils.exprotExcel(fileName, new ExportParams("自定义", "自定义"), list, ${entity}.class, response);
+    }
+
+    /**
+     * 导入excel
+     *
+     * @param epId 企业id
+     */
+    @ResponseBody
+    @RequestMapping(value = "importExcel")
+    public JsonModel importExcel(String epId) throws Exception {
+        try {
+            List<${entity}> list = ExcelUtils.importExcelByIs(getDefaultImportParams(), "file", ${entity}.class, request);
+            ${table.name}Service.saveAll(list);
+            json = JsonModel.success("导入成功！！！");
+        } catch (Exception e) {
+            logger.error(LogExceptionStackUtil.LogExceptionStack(e));
+            json = JsonModel.error("导入失败！！！错误如下：" + e.getMessage());
+            e.printStackTrace();
+        }
+        return json;
     }
 }
 </#if>
