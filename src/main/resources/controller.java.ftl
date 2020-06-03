@@ -79,7 +79,7 @@ public class ${table.controllerName} {
      * @return 表单页路径
      */
     @RequestMapping(value = "addForm")
-    public String addFrom(HttpServletRequest request) {
+    public String addFrom() {
         request.setAttribute("action", "${package.ModuleName}/${table.entityPath}/insert");
         return FORM_PAGE;
     }
@@ -90,7 +90,7 @@ public class ${table.controllerName} {
      * @return 表单页路径
      */
     @RequestMapping(value = "editForm")
-    public String editFrom(HttpServletRequest request) {
+    public String editFrom() {
         String emId = request.getParameter("id");
         ${entity} ${table.name} = ${table.name}Service.getById(emId);
         request.setAttribute("${table.name}", ${table.name});
