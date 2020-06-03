@@ -33,7 +33,7 @@ public class ${table.serviceImplName} extends ${superServiceClass}Impl<${entity}
         if (pagination == null) {
             pagination = new Pagination();
         }
-        pagination = ${table.name}Dao.find${entity}Page(pagination, parametersMap);
+        pagination = ${table.name}Dao.findPage(pagination, parametersMap);
         return new DataGrid(pagination.getTotalCount(), pagination.getResult());
     }
 

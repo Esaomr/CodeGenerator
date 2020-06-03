@@ -1,18 +1,22 @@
 package ${package.Controller};
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.apache.commons.lang3.StringUtils;
-import framework.jointt.ems.utils.excel.ExcelUtils;
-import framework.jointt.ems.page.Pagination;
-import com.jointt.ems.web.ui.PageRequest;
-import com.jointt.ems.web.constant.MessageStatus;
 import com.jointt.ems.web.ui.DataGrid;
 import com.jointt.ems.web.ui.JsonModel;
-import javax.servlet.http.HttpServletResponse;
+import com.jointt.ems.common.util.LogExceptionStackUtil;
+import framework.jointt.ems.page.Pagination;
+import framework.jointt.ems.utils.excel.ExcelUtils;
+import framework.jointt.ems.utils.log.OperateResourceCode;
+import framework.jointt.ems.utils.web.ServletUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.jeecgframework.poi.excel.entity.ExportParams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Map;
 
 <#if restControllerStyle>
 import org.springframework.web.bind.annotation.RestController;
@@ -46,7 +50,7 @@ public class ${table.controllerName} extends ${superControllerClass} {
 public class ${table.controllerName} {
 </#if>
 
-    private static Logger logger = LoggerFactory.getLogger(${table.controllerName}.class);
+    private static final Logger logger = LoggerFactory.getLogger(${table.controllerName}.class);
 
     private final String PAGE_PREFIX = "/${package.ModuleName}/${table.entityPath}/";
     private final String INDEX_PAGE = PAGE_PREFIX + "${table.name}_index";
@@ -184,11 +188,11 @@ public class ${table.controllerName} {
             if(temp > 0) {
                 json = JsonModel.success("删除成功！！！");
             }else{
-                json = JsonModel.error("删除不成功！！！");
+                json = JsonModel.error("删除失败！！！");
             }
         } catch (Exception e) {
             logger.error(LogExceptionStackUtil.LogExceptionStack(e));
-            json = JsonModel.error("删除失败！！！");
+            json = JsonModel.error("删除失败！！！错误如下：" + e.getMessage());
             e.printStackTrace();
         }
         return json;
