@@ -3,6 +3,7 @@ package ${package.Controller};
 import com.jointt.ems.web.ui.DataGrid;
 import com.jointt.ems.web.ui.JsonModel;
 import com.jointt.ems.common.util.LogExceptionStackUtil;
+import framework.jointt.ems.orm.PropertyFilter;
 import framework.jointt.ems.page.Pagination;
 import framework.jointt.ems.utils.excel.ExcelUtils;
 import framework.jointt.ems.utils.log.OperateResourceCode;
@@ -15,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import javax.servlet.http.HttpServletResponse;
+import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.List;
 import java.util.Map;
 
@@ -91,8 +93,8 @@ public class ${table.controllerName} {
      */
     @RequestMapping(value = "editForm")
     public String editFrom() {
-        String emId = request.getParameter("id");
-        ${entity} ${table.name} = ${table.name}Service.getById(emId);
+        String temp = request.getParameter("id");
+        ${entity} ${table.name} = ${table.name}Service.getById(temp);
         request.setAttribute("${table.name}", ${table.name});
         request.setAttribute("action", "${package.ModuleName}/${table.entityPath}/update");
         return FORM_PAGE;
@@ -196,6 +198,28 @@ public class ${table.controllerName} {
             e.printStackTrace();
         }
         return json;
+    }
+
+    /**
+    * 根据 PropertyFilter 查询
+    * eg. 请求参数设置为 {"ALIAS" : "enterprise", "filter_EQS_enterprise.id" : value}
+    * 即可根据 entity.enterprise.id = value 条件查询，其中 entity 为实体类
+    * 若不设置 enterprise 别名则不能使用 enterprise.属性 方式查询
+    * 可以设置多个别名，即可使用多个别名条件查询
+    * 请求参数解析参见 {@link PropertyFilter}
+    *
+    * @param ALIAS 别名，多个以 "," 分隔
+    * @return List<Entity> 实体类List集合
+    */
+    @RequestMapping(value = "getListByPropertyFilter")
+    @ResponseBody
+    public List<${entity}> getListByPropertyFilter(String ALIAS) {
+        List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(request, "filter");
+        if(null == ALIAS){
+            return ${table.name}Service.getListByPropertyFilter(filters);
+        }
+        String[] alias = ALIAS.split(",");
+        return ${table.name}Service.getListByPropertyFilter(filters, alias);
     }
 
     /**
