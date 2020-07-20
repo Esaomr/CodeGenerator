@@ -15,7 +15,6 @@ import java.util.*;
 /**
  * @author lbk
  * @date 2019/12/17
- * @time 10:52
  */
 public class CodeGenerator {
     public static String scanner(String tip) {
@@ -73,59 +72,48 @@ public class CodeGenerator {
         };
 
         // 配置自定义模板，用于生成任何自己想要的文件
-        String templatePath = "/daoImpl.java.ftl";
-        String templatePath2 = "/entityVo.java.ftl";
-//        String templatePath3 = "/test.jsp.ftl";
+        String daoImplModel = "/daoImpl.java.ftl";
+        String indexJspModel = "/index.jsp.ftl";
+        String formJspModel = "/form.jsp.ftl";
+        String indexJsModel = "/index.js.ftl";
+        String formJsModel = "/form.js.ftl";
         List<FileOutConfig> focList = new ArrayList<>();
         String path = "/src/main/java/com/codes/" + pc.getModuleName();
-        focList.add(new FileOutConfig(templatePath) {
+
+        focList.add(new FileOutConfig(daoImplModel) {
             @Override
             public String outputFile(TableInfo tableInfo) {
                 return projectPath + path + "/mapper/xml/" + tableInfo.getEntityName() + "DaoImpl.java";
             }
         });
 
-        focList.add(new FileOutConfig(templatePath2) {
+        focList.add(new FileOutConfig(indexJspModel) {
             @Override
             public String outputFile(TableInfo tableInfo) {
-                return projectPath + path + "/entity/" + tableInfo.getEntityName() + "Vo.java" ;
+                return projectPath + path + "/jsp/" + tableInfo.getName() + "_index.jsp" ;
             }
         });
 
-//        focList.add(new FileOutConfig(templatePath3) {
-//            @Override
-//            public String outputFile(TableInfo tableInfo) {
-//                return projectPath + path + "/jsp/" + tableInfo.getName() + "_form.jsp" ;
-//            }
-//        });
-//
-//        focList.add(new FileOutConfig(templatePath3) {
-//            @Override
-//            public String outputFile(TableInfo tableInfo) {
-//                return projectPath + path + "/jsp/" + tableInfo.getName() + "_index.jsp" ;
-//            }
-//        });
-//
-//        focList.add(new FileOutConfig(templatePath3) {
-//            @Override
-//            public String outputFile(TableInfo tableInfo) {
-//                return projectPath + path + "/jsp/" + tableInfo.getName() + "_view.jsp" ;
-//            }
-//        });
-//
-//        focList.add(new FileOutConfig(templatePath3) {
-//            @Override
-//            public String outputFile(TableInfo tableInfo) {
-//                return projectPath + path + "/js/" + tableInfo.getName() + "_form.js" ;
-//            }
-//        });
-//
-//        focList.add(new FileOutConfig(templatePath3) {
-//            @Override
-//            public String outputFile(TableInfo tableInfo) {
-//                return projectPath + path + "/js/" + tableInfo.getName() + "_index.js" ;
-//            }
-//        });
+        focList.add(new FileOutConfig(formJspModel) {
+            @Override
+            public String outputFile(TableInfo tableInfo) {
+                return projectPath + path + "/jsp/" + tableInfo.getName() + "_form.jsp" ;
+            }
+        });
+
+        focList.add(new FileOutConfig(indexJsModel) {
+            @Override
+            public String outputFile(TableInfo tableInfo) {
+                return projectPath + path + "/js/" + tableInfo.getName() + "_index.js" ;
+            }
+        });
+
+        focList.add(new FileOutConfig(formJsModel) {
+            @Override
+            public String outputFile(TableInfo tableInfo) {
+                return projectPath + path + "/js/" + tableInfo.getName() + "_form.js" ;
+            }
+        });
 
         cfg.setFileOutConfigList(focList);
         mpg.setCfg(cfg);
@@ -142,8 +130,14 @@ public class CodeGenerator {
 
         // 策略配置
         StrategyConfig strategy = new StrategyConfig();
+
+        //设置数据库表映射到实体的命名策略为驼峰命名
         strategy.setNaming(NamingStrategy.underline_to_camel);
+        //设置数据库表字段映射到实体的命名策略为驼峰命名
         strategy.setColumnNaming(NamingStrategy.underline_to_camel);
+
+        strategy.setControllerMappingHyphenStyle(false);
+
         strategy.setSuperEntityClass("framework.jointt.ems.entity.BaseEntity");
         strategy.setSuperServiceClass(null);
         strategy.setSuperServiceImplClass(null);

@@ -30,9 +30,7 @@ import ${superControllerClassPackage};
 </#if>
 
 /**
- * <p>
  * ${table.name} 控制器
- * </p>
  *
  * @author ${author}
  * @date ${date}
@@ -44,7 +42,8 @@ import ${superControllerClassPackage};
 </#if>
 @RequestMapping("<#if package.ModuleName??>/${package.ModuleName}</#if>/<#if controllerMappingHyphenStyle??>${controllerMappingHyphen}<#else>${table.entityPath}</#if>")
 <#if kotlin>
-class ${table.controllerName}<#if superControllerClass??> : ${superControllerClass}()</#if>
+class ${table.controllerName}
+<#if superControllerClass??> : ${superControllerClass}()</#if>
 <#else>
 <#if superControllerClass??>
 public class ${table.controllerName} extends ${superControllerClass} {
@@ -92,9 +91,8 @@ public class ${table.controllerName} {
      * @return 表单页路径
      */
     @RequestMapping(value = "editForm")
-    public String editFrom() {
-        String temp = request.getParameter("id");
-        ${entity} ${table.name} = ${table.name}Service.getById(temp);
+    public String editFrom(String id) {
+        ${entity} ${table.name} = ${table.name}Service.getById(id);
         request.setAttribute("${table.name}", ${table.name});
         request.setAttribute("action", "${package.ModuleName}/${table.entityPath}/update");
         return FORM_PAGE;
