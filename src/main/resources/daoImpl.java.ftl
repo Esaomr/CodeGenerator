@@ -19,6 +19,8 @@ open class ${table.mapperImplName} : ${superMapperImplClass}<${table.mapperName}
 <#else>
 public class ${table.mapperName}Impl extends ${superMapperClass}Impl<${entity}, String> implements ${table.mapperName} {
 
+    private static final String ${cfg.tableUpperName}_SQL = "SELECT * FROM ${table.name} WHERE 1=1";
+
     @Override
     public Pagination findPage(Pagination pagination, Map<String, Object> parametersMap) {
         StringBuffer sb = new StringBuffer();
@@ -31,6 +33,19 @@ public class ${table.mapperName}Impl extends ${superMapperClass}Impl<${entity}, 
         }
         sb.append(" ORDER BY id");
         return findPage(sb.toString(), pagination, parametersMap);
+    }
+
+    @Override
+    public Pagination findPage(Pagination pagination, Map<String, Object> parametersMap) {
+        sb = new StringBuffer(${cfg.tableUpperName}_SQL);
+        if(parametersMap.containsKey("epId") && StringUtils.isNotBlank(parametersMap.get("epId").toString())){
+            sb.append(" AND temp.enterpriseId = :epId");
+        }
+        if(parametersMap.containsKey("name") && StringUtils.isNotBlank(parametersMap.get("name").toString())){
+            sb.append(" AND temp.name like '%" + parametersMap.get("name") + "%'");
+        }
+        sb.append(" ORDER BY id");
+        return findPageBySqlAndSetRT(sb.toString(), pagination, parametersMap, ${entity}Vo.class);;
     }
 }
 </#if>

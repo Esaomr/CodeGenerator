@@ -5,9 +5,7 @@ import ${superMapperClassPackage};
 import framework.jointt.ems.page.Pagination;
 import java.util.Map;
 /**
- * <p>
- * ${table.name} 接口
- * </p>
+ * ${cfg.annotation}(${table.name}) 接口
  *
  * @author ${author}
  * @date ${date}

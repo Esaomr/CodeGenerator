@@ -30,7 +30,7 @@ import ${superControllerClassPackage};
 </#if>
 
 /**
- * ${table.name} 控制器
+ * ${cfg.annotation}(${table.name})控制器
  *
  * @author ${author}
  * @date ${date}
@@ -40,7 +40,7 @@ import ${superControllerClassPackage};
 <#else>
 @Controller
 </#if>
-@RequestMapping("<#if package.ModuleName??>/${package.ModuleName}</#if>/<#if controllerMappingHyphenStyle??>${controllerMappingHyphen}<#else>${table.entityPath}</#if>")
+@RequestMapping("<#if package.ModuleName??>/${package.ModuleName}</#if>/${table.entityPath}")
 <#if kotlin>
 class ${table.controllerName}
 <#if superControllerClass??> : ${superControllerClass}()</#if>
@@ -54,12 +54,12 @@ public class ${table.controllerName} {
     private static final Logger logger = LoggerFactory.getLogger(${table.controllerName}.class);
 
     private final String PAGE_PREFIX = "/${package.ModuleName}/${table.entityPath}/";
-    private final String INDEX_PAGE = PAGE_PREFIX + "${table.name}_index";
-    private final String FORM_PAGE = PAGE_PREFIX + "${table.name}_form";
-    private final String VIEW_PAGE = PAGE_PREFIX + "${table.name}_view";
+    private final String INDEX_PAGE = PAGE_PREFIX + "${table.entityPath}_index";
+    private final String FORM_PAGE = PAGE_PREFIX + "${table.entityPath}_form";
+    private final String VIEW_PAGE = PAGE_PREFIX + "${table.entityPath}_view";
 
     @Autowired
-    private ${table.serviceName} ${table.name}Service;
+    private ${table.serviceName} ${table.entityPath}Service;
 
     @Autowired
     private EnterpriseService enterpriseService;
@@ -92,8 +92,8 @@ public class ${table.controllerName} {
      */
     @RequestMapping(value = "editForm")
     public String editFrom(String id) {
-        ${entity} ${table.name} = ${table.name}Service.getById(id);
-        request.setAttribute("${table.name}", ${table.name});
+        ${entity} ${table.entityPath} = ${table.entityPath}Service.getById(id);
+        request.setAttribute("${table.entityPath}", ${table.entityPath});
         request.setAttribute("action", "${package.ModuleName}/${table.entityPath}/update");
         return FORM_PAGE;
     }
@@ -103,11 +103,11 @@ public class ${table.controllerName} {
      *
      * @return 视图页路径
      */
-    @OperateResourceCode(operateCode = "view", resourceCodeList = {"${table.name}", "senior${entity}"})
+    @OperateResourceCode(operateCode = "view", resourceCodeList = {"${table.entityPath}", "senior${entity}"})
     @RequestMapping(value = "view")
     public String view(String id) {
-        ${entity} ${table.name} = ${table.name}Service.getById(id);
-        request.setAttribute("${table.name}", ${table.name});
+        ${entity} ${table.entityPath} = ${table.entityPath}Service.getById(id);
+        request.setAttribute("${table.entityPath}", ${table.entityPath});
         return VIEW_PAGE;
     }
 
@@ -116,12 +116,12 @@ public class ${table.controllerName} {
      *
      * @return
      */
-    @OperateResourceCode(operateCode = "view", resourceCodeList = {"${table.name}","senior${entity}"})
+    @OperateResourceCode(operateCode = "view", resourceCodeList = {"${table.entityPath}","senior${entity}"})
     @RequestMapping(value = "datagrid")
     @ResponseBody
     public DataGrid dataGrid(Pagination pagination) {
         Map<String, Object> parametersMap = ServletUtils.getParametersStartingWith(request, null);
-        dataGrid = ${table.name}Service.getDataGrid(pagination, parametersMap);
+        dataGrid = ${table.entityPath}Service.getDataGrid(pagination, parametersMap);
         return dataGrid;
     }
 
@@ -130,21 +130,15 @@ public class ${table.controllerName} {
      *
      * @return 提示信息
      */
-    @OperateResourceCode(operateCode = "create", resourceCodeList = {"${table.name}", "senior${entity}"})
+    @OperateResourceCode(operateCode = "create", resourceCodeList = {"${table.entityPath}", "senior${entity}"})
     @RequestMapping(value = "insert")
     @ResponseBody
-    public JsonModel insert(${entity} ${table.name}) {
+    public JsonModel insert(${entity} ${table.entityPath}) {
         try {
-            ${entity} temp = ${table.name}Service.save(${table.name});
-            if (null != temp && null != (temp.getId())) {
-                json = JsonModel.success("新增成功！！！");
-            } else {
-                json = JsonModel.error("新增失败！！！");
-            }
+            ${entity} temp = ${table.entityPath}Service.save(${table.entityPath});
+            json = null != temp && null != (temp.getId()) ? JsonModel.success("新增成功") : JsonModel.error("新增失败");
         } catch (Exception e) {
-            logger.error(LogExceptionStackUtil.LogExceptionStack(e));
-            json = JsonModel.error("新增失败！！！错误如下：" + e.getMessage());
-            e.printStackTrace();
+            exceptionHandling(logger, e);
         }
         return json;
     }
@@ -152,24 +146,18 @@ public class ${table.controllerName} {
     /**
      * 修改操作
      *
-     * @param ${table.name} 要更新的实体类对象
+     * @param ${table.entityPath} 要更新的实体类对象
      * @return 提示信息
      */
-    @OperateResourceCode(operateCode = "edit", resourceCodeList = {"${table.name}", "senior${entity}"})
+    @OperateResourceCode(operateCode = "edit", resourceCodeList = {"${table.entityPath}", "senior${entity}"})
     @RequestMapping(value = "update")
     @ResponseBody
-    public JsonModel update(${entity} ${table.name}) {
+    public JsonModel update(${entity} ${table.entityPath}) {
         try {
-            ${entity} temp =  ${table.name}Service.update(${table.name});
-            if (temp != null && temp.getId() != null) {
-                json = JsonModel.success("修改成功！！！");
-            } else {
-                json = JsonModel.error("修改失败！！！");
-            }
+            ${entity} temp =  ${table.entityPath}Service.update(${table.entityPath});
+            json = null != temp && null != (temp.getId()) ? JsonModel.success("修改成功") : JsonModel.error("修改失败");
         } catch (Exception e) {
-            logger.error(LogExceptionStackUtil.LogExceptionStack(e));
-            json = JsonModel.error("修改失败！！！错误如下：" + e.getMessage());
-            e.printStackTrace();
+            exceptionHandling(logger, e);
         }
         return json;
     }
@@ -179,21 +167,15 @@ public class ${table.controllerName} {
      *
      * @return 提示信息
      */
-    @OperateResourceCode(operateCode = "delete", resourceCodeList = {"${table.name}", "senior${entity}"})
+    @OperateResourceCode(operateCode = "delete", resourceCodeList = {"${table.entityPath}", "senior${entity}"})
     @RequestMapping(value = "delete")
     @ResponseBody
     public JsonModel delete(String ids) {
         try {
-            int temp = ${table.name}Service.batchDelete(ids);
-            if(temp > 0) {
-                json = JsonModel.success("删除成功！！！");
-            }else{
-                json = JsonModel.error("删除失败！！！");
-            }
+            int temp = ${table.entityPath}Service.batchDelete(ids);
+            json = temp > 0 ? JsonModel.success("删除成功！！！") : JsonModel.error("删除失败！！！");
         } catch (Exception e) {
-            logger.error(LogExceptionStackUtil.LogExceptionStack(e));
-            json = JsonModel.error("删除失败！！！错误如下：" + e.getMessage());
-            e.printStackTrace();
+            exceptionHandling(logger, e);
         }
         return json;
     }
@@ -214,10 +196,10 @@ public class ${table.controllerName} {
     public List<${entity}> getListByPropertyFilter(String ALIAS) {
         List<PropertyFilter> filters = PropertyFilter.buildFromHttpRequest(request, "filter");
         if(null == ALIAS){
-            return ${table.name}Service.getListByPropertyFilter(filters);
+            return ${table.entityPath}Service.getListByPropertyFilter(filters);
         }
         String[] alias = ALIAS.split(",");
-        return ${table.name}Service.getListByPropertyFilter(filters, alias);
+        return ${table.entityPath}Service.getListByPropertyFilter(filters, alias);
     }
 
     /**
@@ -228,14 +210,18 @@ public class ${table.controllerName} {
     @RequestMapping(value = "exportExcel")
     public void exportExcel(String ids, String epId, HttpServletResponse response) throws Exception {
         List<${entity}> list = null;
-        if(StringUtils.isNotBlank(ids)){
-            list = ${table.name}Service.getListByIds(ids);
-        } else {
-            list = ${table.name}Service.read();
+        try{
+            if(StringUtils.isNotBlank(ids)){
+                list = ${table.entityPath}Service.getListByIds(ids);
+            } else {
+                list = ${table.entityPath}Service.read();
+            }
+            Enterprise enterprise = enterpriseService.get(epId);
+            String fileName = enterprise.getName() + "自定义";
+            ExcelUtils.exprotExcel(fileName, new ExportParams("自定义", "自定义"), list, ${entity}.class, response);
+        } catch (Exception e) {
+            exceptionHandling(logger, e);
         }
-        Enterprise enterprise = enterpriseService.get(epId);
-        String fileName = enterprise.getName() + "自定义";
-        ExcelUtils.exprotExcel(fileName, new ExportParams("自定义", "自定义"), list, ${entity}.class, response);
     }
 
     /**
@@ -248,12 +234,10 @@ public class ${table.controllerName} {
     public JsonModel importExcel(String epId) throws Exception {
         try {
             List<${entity}> list = ExcelUtils.importExcelByIs(getDefaultImportParams(), "file", ${entity}.class, request);
-            ${table.name}Service.saveAll(list);
+            ${table.entityPath}Service.saveAll(list);
             json = JsonModel.success("导入成功！！！");
         } catch (Exception e) {
-            logger.error(LogExceptionStackUtil.LogExceptionStack(e));
-            json = JsonModel.error("导入失败！！！错误如下：" + e.getMessage());
-            e.printStackTrace();
+            exceptionHandling(logger, e);
         }
         return json;
     }

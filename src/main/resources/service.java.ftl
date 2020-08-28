@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 /**
  * <p>
- * ${table.name} 服务类
+ * ${cfg.annotation}(${table.name}) 服务类
  * </p>
  *
  * @author ${author}

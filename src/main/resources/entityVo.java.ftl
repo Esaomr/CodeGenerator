@@ -6,9 +6,7 @@ import ${pkg};
 </#list>
 
 /**
- * <p>
- * ${table.name}Vo类
- * </p>
+ * (${table.name})Vo类
  *
  * @author ${author}
  * @since ${date}

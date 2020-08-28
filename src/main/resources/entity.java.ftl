@@ -19,9 +19,7 @@ import lombok.experimental.Accessors;
 </#if>
 
 /**
- * <p>
- * ${table.name} 实体类
- * </p>
+ * (${table.name}) 实体类
  *
  * @author ${author}
  * @date ${date}

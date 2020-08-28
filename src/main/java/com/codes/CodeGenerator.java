@@ -9,7 +9,6 @@ import com.baomidou.mybatisplus.generator.config.po.TableInfo;
 import com.baomidou.mybatisplus.generator.config.rules.DateType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
-
 import java.util.*;
 
 /**
@@ -50,10 +49,10 @@ public class CodeGenerator {
 
         // 数据源配置
         DataSourceConfig dsc = new DataSourceConfig();
-        dsc.setUrl("jdbc:postgresql://14.29.114.203:6543/imp");
+        dsc.setUrl("jdbc:postgresql://192.168.1.136:5432/imp_saas");
         dsc.setDriverName("org.postgresql.Driver");
         dsc.setUsername("jointt");
-        dsc.setPassword("jointt");
+        dsc.setPassword("jointtadmin");
         dsc.setSchemaName("jointt");
         mpg.setDataSource(dsc);
 
@@ -67,12 +66,17 @@ public class CodeGenerator {
         InjectionConfig cfg = new InjectionConfig() {
             @Override
             public void initMap() {
-
+                Map<String, Object> map = new HashMap<>();
+                map.put("tableCamelName", "stockLock");
+                map.put("tableUpperName", "STOCKLOCK");
+                map.put("annotation", "");
+                this.setMap(map);
             }
         };
 
         // 配置自定义模板，用于生成任何自己想要的文件
         String daoImplModel = "/daoImpl.java.ftl";
+        String entityVoModel = "/entityVo.java.ftl";
         String indexJspModel = "/index.jsp.ftl";
         String formJspModel = "/form.jsp.ftl";
         String indexJsModel = "/index.js.ftl";
@@ -84,6 +88,13 @@ public class CodeGenerator {
             @Override
             public String outputFile(TableInfo tableInfo) {
                 return projectPath + path + "/mapper/xml/" + tableInfo.getEntityName() + "DaoImpl.java";
+            }
+        });
+
+        focList.add(new FileOutConfig(entityVoModel) {
+            @Override
+            public String outputFile(TableInfo tableInfo) {
+                return projectPath + path + "/entity/" + tableInfo.getEntityName() + "Vo.java";
             }
         });
 
@@ -148,6 +159,7 @@ public class CodeGenerator {
         strategy.setInclude(scanner("表名,多个以英文逗号分隔").split(","));
         strategy.setControllerMappingHyphenStyle(true);
         strategy.setTablePrefix(pc.getModuleName() + "_");
+
         mpg.setStrategy(strategy);
         mpg.setTemplateEngine(new FreemarkerTemplateEngine());
         mpg.execute();

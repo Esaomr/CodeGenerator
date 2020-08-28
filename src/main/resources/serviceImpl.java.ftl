@@ -20,14 +20,14 @@ import java.util.Map;
 public class ${table.serviceImplName} extends ${superServiceClass}Impl<${entity}, ${table.mapperName}> implements ${table.serviceName} {
 
     @Autowired
-    private ${entity}Dao ${table.name}Dao;
+    private ${entity}Dao ${table.entityPath}Dao;
 
     @Override
     public DataGrid getDataGrid(Pagination pagination, Map<String, Object> parametersMap) {
         if (pagination == null) {
             pagination = new Pagination();
         }
-        pagination = ${table.name}Dao.findPage(pagination, parametersMap);
+        pagination = ${table.entityPath}Dao.findPage(pagination, parametersMap);
         return new DataGrid(pagination.getTotalCount(), pagination.getResult());
     }
 
