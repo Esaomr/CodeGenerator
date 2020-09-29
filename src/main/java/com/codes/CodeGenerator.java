@@ -49,7 +49,7 @@ public class CodeGenerator {
 
         // 数据源配置
         DataSourceConfig dsc = new DataSourceConfig();
-        dsc.setUrl("jdbc:postgresql://192.168.1.136:5432/imp_saas");
+        dsc.setUrl("jdbc:postgresql://192.168.1.136:5432/hyqc");
         dsc.setDriverName("org.postgresql.Driver");
         dsc.setUsername("jointt");
         dsc.setPassword("jointtadmin");
@@ -67,9 +67,9 @@ public class CodeGenerator {
             @Override
             public void initMap() {
                 Map<String, Object> map = new HashMap<>();
-                map.put("tableCamelName", "stockLock");
-                map.put("tableUpperName", "STOCKLOCK");
-                map.put("annotation", "");
+                map.put("tableCamelName", "checkRecord");
+                map.put("tableUpperName", "CHECKRECORD");
+                map.put("annotation", "模块注释");
                 this.setMap(map);
             }
         };
